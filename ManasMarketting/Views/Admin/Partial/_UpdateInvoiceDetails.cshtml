@@ -1,0 +1,207 @@
+﻿@model ManasMarketting.Models.tbl_purchase_viewmodel
+
+<div class="pd-ltr-20 xs-pd-20-10">
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="title">
+                @*  @if (Model.sales_detail_id < 1)
+                {
+                <h3 class="h3">Add Bill Details</h3>
+                }
+                else
+                {
+                <h3 class="h3">Update Bill Details</h3>
+                } *@
+
+                <h3 class="h3">Purchase Details</h3>
+            </div>
+            @* <input type="hidden" id="sales_detail_id" value="@Model.sales_detail_id" /> *@
+        </div>
+        <div class="col-md-6 col-sm-12 text-right">
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <hr class="mt-0" />
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 pt-10">
+                    <div class="form-group">
+                        <label for="hsn_code">HSN Code</label>
+                        <input type="text" class="form-control" id="hsn_code" name="hsn_code">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" class="form-control" id="description" name="description">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="total_quantity">Total Quantity</label>
+                        <input type="text" class="form-control" id="total_quantity" name="total_quantity">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="gross_amount">Gross Amount</label>
+                        <input type="text" class="form-control" id="gross_amount" name="gross_amount">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cgst_percent">CGST Percent <sup style="color:red">*</sup></label>
+                        <input type="text" class="form-control" id="cgst_percent" name="cgst_percent">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cgst_amount">CGST Amount <sup style="color:red">*</sup></label>
+                        <input type="text" class="form-control" id="cgst_amount" name="cgst_amount" disabled>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="sgst_percent">SGST Percent <sup style="color:red">*</sup></label>
+                        <input type="text" class="form-control" id="sgst_percent" name="sgst_percent">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="total_sgst_amount">Total SGST Amount <sup style="color:red">*</sup></label>
+                        <input type="text" class="form-control" id="total_sgst_amount" name="total_sgst_amount">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="igst">IGST Percentle <sup style="color:red">*</sup></label>
+                        <input type="text" class="form-control" id="igst_percent" name="igst">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="igst">IGST <sup style="color:red">*</sup></label>
+                        <input type="text" class="form-control" id="total_igst" name="igst" disabled>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="tcs">TCS <sup style="color:red">*</sup></label>
+                        <input type="text" class="form-control" id="tcs" name="tcs">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="button" value="Save" class="btn btn-sm btn-danger mt-2" id="btnSave1" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        function calculateIGST() {
+            debugger
+            const grossAmount = parseFloat($('#gross_amount').val());
+            const igstPercent = parseFloat($('#igst_percent').val());
+            const sgst_percent = parseFloat($('#sgst_percent').val());
+            const sgstAmountInput = $('#total_sgst_amount');
+            const cgst_percent = parseFloat($('#cgst_percent').val());
+            const cgstAmountInput = $('#cgst_amount');
+            const igstAmountInput = $('#total_igst');
+            var igstAmount;
+            if (igstPercent != null) {
+                 igstAmount = (grossAmount * igstPercent) / 100;
+                igstAmountInput.val(igstAmount.toFixed(2));
+            } else {
+                const sgstAmount = (grossAmount * sgst_percent) / 100;
+                sgstAmountInput.val(sgstAmount.toFixed());
+                const igstAmountInput = (grossAmount * cgst_percent) / 100; 
+                igstAmountInput.val(igstAmountInput.toFixed());
+            }
+
+            const hsn_code = $('#hsn_code').val();
+            const description = $('#description').val();
+            const total_quantity = $('#total_quantity').val();
+            const tcs = $('#tcs').val();
+            const purchase_id = $('#purchaseidde').val();
+            debugger
+            var obj = {
+                gross_amount: grossAmount,
+                total_tax_per: igstPercent,
+                igst: igstAmount,
+                description: description,
+                hsn_code: hsn_code,
+                total_quantity: total_quantity,
+                TCS: tcs,
+                purchase_id: purchase_id
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UpdatePurchaseDetails", "Admin") ',
+                dataType: 'json',
+                data: obj,
+                success: function (result) {
+
+                    if (result.status == 0) {
+                        swal({
+                            text: result.msg,
+                            type: 'error',
+                            title: 'Sorry !'
+                        });
+                    }
+                    else {
+                        swal({
+                            text: result.msg,
+                            type: 'success',
+                        }).then(function () {
+                            reload();
+                        });
+                    }
+                },
+
+            });
+        }
+
+
+
+        $('#btnSave1').click(function () {
+            calculateIGST();
+
+        });
+
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,52 @@
+﻿@model ManasMarketting.Models.Dashboard
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
+
+<div class="xs-pd-20-10 pd-ltr-20">
+    <div class="title pb-20">
+        <h2 class="h3 mb-0">Dashboard</h2>
+    </div>
+    <div class="row pb-10">
+        <div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+            <div class="card-box height-100-p widget-style3">
+                <div class="d-flex flex-wrap">
+                    <div class="widget-data">
+                        <div class="weight-700 font-24 text-dark">
+                            @Model.vendor_count
+                        </div>
+                        <div class="font-14 text-secondary weight-500">
+                            Total Vendors
+                        </div>
+                    </div>
+                    <div class="widget-icon">
+                        <div class="icon">
+                            <i class="icon-copy dw dw-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+            <div class="card-box height-100-p widget-style3">
+                <div class="d-flex flex-wrap">
+                    <div class="widget-data">
+                        <div class="weight-700 font-24 text-dark">
+                            @Convert.ToInt32(Model.total_sales)
+                        </div>
+                        <div class="font-14 text-secondary weight-500">
+                            Total Sales
+                        </div>
+                    </div>
+                    <div class="widget-icon">
+                        <div class="icon" data-color="#09cc06" style="color: rgb(9, 204, 6);">
+                            <i class="icon-copy fa fa-inr"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

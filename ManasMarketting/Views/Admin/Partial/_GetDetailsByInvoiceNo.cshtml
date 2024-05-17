@@ -1,0 +1,125 @@
+﻿@model List<tbl_purchase_viewmodel>
+
+
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 text-right">
+        <a class="btn btn-sm btn-primary"
+           href="#"
+           role="button" data-detail="@Newtonsoft.Json.JsonConvert.SerializeObject(Model)" id="btnNew">
+            Add New
+        </a>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-md-12 col-lg-12">
+        <table class="table table-bordered table-sm" id="StateList">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th>Action</th>
+                    <th>HSN Code</th>
+                    <th>UDT Amount-2</th>
+                    <th>Total Qty.</th>
+                    <th>Total Tax(%)</th>
+                    <th>Total CGST Amo.</th>
+                    <th>Total SGST Amo.</th>
+                    <th>Net Amount</th>
+
+                </tr>
+            </thead>
+         
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $(document).on("click", '#btnNew,#btnEdit', function () {
+            debugger;
+            console.log("clicked");
+            if ($.inArray($(this).attr('id'), ['btnEdit', 'btnNew']) < 0) {
+                return true;
+            }
+            var arr = {};
+
+            if (($(this).attr('id') === 'btnEdit') || ($(this).attr('id') === 'btnNew')) {
+                if ($(this).attr('id') === 'btnEdit') {
+                    arr = JSON.parse($(this).closest('tr').attr('data-detail'));
+                }
+                if ($(this).attr('id') === 'btnNew') {
+                    arr = JSON.parse($(this).attr('data-detail'));
+                }
+                loader.load();
+                $.post('@Url.Action("_UpdateInvoiceDetails","Admin")', arr).done(function (result) {
+                    //resultReload(result);
+                    mdlA.content = result;
+                    mdlA.id = 'mymodal';
+                    mdlA.options.backdrop = 'static';
+                    mdlA.alert(mdlA.size.large);
+                    $('button.close span,#mdlCancel').unbind().click(function () {
+                        mdlA.dispose();
+                    });
+
+                    $(document).on("click", '#btnSave', function () {
+                        debugger;
+                        var formData = new FormData();
+
+                        formData.append("sales_detail_id", $('#sales_detail_id').val());
+                        formData.append("sales_id", $('#sales_id').val());
+                        formData.append("hsn_code", $('#hsn_code').val());
+                        formData.append("UD_AMOUNT_2", $('#UD_AMOUNT_2').val());
+                        formData.append("TOTAL_QUANTITY", $('#TOTAL_QUANTITY').val());
+                        formData.append("TOTAL_TAX", $('#TOTAL_TAX').val());
+                        formData.append("TOTAL_CGST_AMOUNT", $('#TOTAL_CGST_AMOUNT').val());
+                        formData.append("TOTAL_SGST_AMOUNT", $('#TOTAL_SGST_AMOUNT').val());
+                        formData.append("total_cgst_per", $('#total_cgst_per').val());
+                        formData.append("total_sgst_per", $('#total_sgst_per').val());
+
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("AddUpdateBillDetails", "Admin")',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            success: function (result) {
+                                if (result.status == an.type.error) {
+                                    toastr.error('result.msg', 'Sorry')
+                                }
+                                if (result.status > 0) {
+                                    mdlA.dispose();
+                                    swal({
+                                        text: result.msg,
+                                        type: 'success',
+                                    }).then(function () {
+                                        reload();
+                                    });
+                                }
+                            },
+                        });
+                    });
+                }).catch(function (xhr, e, msg) {
+
+                }).fail(function (xhr) {
+                    if (xhr.status == 500) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Server error'
+                        });
+                    }
+                    if (xhr.status == 0) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Internet Connection was broken'
+                        });
+                    }
+                }).always(function () {
+                    loader.remove();
+                });
+            }
+        });
+    });
+</script>

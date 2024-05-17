@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewData["Title"] = "GetSalesDetails";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
+@model tbl_sales_viewmodel
+
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>List Sales Details</h4>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <div class="title">
+                        <a class="btn btn-sm btn-primary" asp-controller="Admin" asp-action="Index"
+                           id="btnBack" data-toggle="tooltip" title="Back To Dashboard">
+                            <i class="fa fa-reply"></i>
+                        </a>
+                        <a class="btn btn-sm btn-primary" asp-controller="Admin" asp-action="AddUpdateSalesDetails"
+                           id="btnBack">
+                            <i class="fa fa-plus"></i>
+                            Add
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-3">                   
+                    <label>Vendor Name </label>
+                    <select class="form-control form-control-sm" id="vendor_id">
+                        <option value="0">--Select All--</option>
+                        @foreach (var i in Model.vendor_list)
+                        {                                   
+                                <option value="@i.vendor_id" )>@i.vendor_name</option>                              
+                        }
+                    </select>                   
+                </div>
+                <div class="col-md-3">
+                    <label>Date From</label>
+                    <input type="text" class="form-control form-control-sm" id="datefrom" />
+                </div>
+                <div class="col-md-3">
+                    <label>Date To</label>
+                    <input type="text" class="form-control form-control-sm" id="dateto" />
+                </div>
+                <div class="col-md-3 mt-2">
+                    <a class="btn btn-sm btn-primary mt-4" href="#" role="button" id="btnSearch">Search</a>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12" id="display_SalesDetails">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#datefrom').datepicker({
+            dateFormat: "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true
+        });
+        $('#dateto').datepicker({
+            dateFormat: "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true
+        });
+        var GetSalesDetail = function () {
+            var vendor_id = $('#vendor_id').val();
+            var datefrom = $('#datefrom').val();
+            var dateto = $('#dateto').val();
+            loader.load();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("_GetSalesDetails", "Admin")',
+                data: { vendor_id: vendor_id, datefrom: datefrom, dateto: dateto },
+                success: function (result) {
+                    $('#display_SalesDetails').html(result);
+                    loader.remove();
+                }
+            });
+        };
+        GetSalesDetail();
+        $('#btnSearch').click(function () {
+            GetSalesDetail();
+        });
+    });
+</script>
+

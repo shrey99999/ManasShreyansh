@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewData["Title"] = "ListCity";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+   
+}
+
+@model List<Tbl_cityViewModel>
+
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>List City</h4>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <a class="btn btn-sm btn-primary" asp-controller="Admin" asp-action="Index"
+                    id="btnBack">
+                    <i class="fa fa-reply"></i>
+                    </a>
+                    <a class="btn btn-sm btn-primary"
+                       href="#"
+                       role="button" data-detail="@Newtonsoft.Json.JsonConvert.SerializeObject(Model)" id="btnNew">
+                        Add New
+                    </a>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <table class="table table-bordered table-sm" id="StateList">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th>City Name</th>
+                                <th>Sate Name</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                               int SrNo = 1;
+                               foreach (var i in Model)
+                               {
+                                  
+                                   <tr data-detail="@Newtonsoft.Json.JsonConvert.SerializeObject(i)">
+
+                                       <th scope="row">@SrNo</th>
+
+                                       <td>@i.city_name</td>
+
+                                       <td>@i.state_name</td>
+                                       <td>
+                                           @if (i.status)
+                                           {
+                                               <span class="badge badge-success">Active</span>
+                                           }
+                                           else
+                                           {
+                                               <span class="badge badge-danger">De-active</span>
+                                           }
+                                       </td>
+                                       <td>
+                                           <a href="#" class="btn btn-sm btn-primary" id="btnEdit">
+                                               <i class="fa fa-edit"></i>
+                                           </a>
+                                       </td>
+                                   </tr>
+                                   SrNo = SrNo + 1;
+                               }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $(document).on("click", '#btnNew,#btnEdit', function () {
+            debugger;
+            console.log("clicked");
+            if ($.inArray($(this).attr('id'), ['btnEdit', 'btnNew']) < 0) {
+                return true;
+            }
+            var arr = {};
+
+            if (($(this).attr('id') === 'btnEdit') || ($(this).attr('id') === 'btnNew')) {
+                if ($(this).attr('id') === 'btnEdit') {
+                    arr = JSON.parse($(this).closest('tr').attr('data-detail'));
+                }
+                if ($(this).attr('id') === 'btnNew') {
+                    arr = JSON.parse($(this).attr('data-detail'));
+                }
+                loader.load();
+                $.post('@Url.Action("_UpdateCity", "Admin")', arr).done(function (result) {
+                    //resultReload(result);
+                    mdlA.content = result;
+                    mdlA.id = 'mymodal';
+                    mdlA.options.backdrop = 'static';
+                    mdlA.alert(mdlA.size.default);
+                    $('button.close span,#mdlCancel').unbind().click(function () {
+                        mdlA.dispose();
+                    });
+
+                    $('#btnSave').click(function () {
+                        var city_name = $('#city_name').val();
+                        if (city_name == "") {
+                            swal("", "Please Enter City Name ", "warning")
+                            return false;
+                        }
+                        var formData = new FormData();
+
+                        formData.append("city_id", $('#city_id').val());
+                        formData.append("city_name", $('#city_name').val());
+                        formData.append("state_id", $('#state_id').val());
+                        //formData.append("status", $('#status').val());
+                        formData.append("status", $('#status').is(":checked"));
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("UpdateCity", "Admin")',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            success: function (result) {
+                                if (result.status == 0) {
+                                    mdlA.dispose();
+                                    swal({
+                                        title:'Oops !',
+                                        text: result.msg,
+                                        type: 'error',                                      
+                                    });
+                                }
+                                else {
+                                    mdlA.dispose();
+                                    swal({
+                                        text: result.msg,
+                                        type: 'success',
+                                    }).then(function () {
+                                        reload();
+                                    });
+                                }
+                            },
+                        });
+                    });
+                }).catch(function (xhr, e, msg) {
+
+                }).fail(function (xhr) {
+                    if (xhr.status == 500) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Server error'
+                        });
+                    }
+                    if (xhr.status == 0) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Internet Connection was broken'
+                        });
+                    }
+                }).always(function () {
+                    loader.remove();
+                });
+            }
+        });
+    });
+</script>
+
+
+
+

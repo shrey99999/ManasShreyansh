@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewData["Title"] = "GetSalesList";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
+@model ManasMarketting.Models.tbl_sales_viewmodel
+@using ManasMarketting.Models
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left col -->
+            <div class="col-md-12">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">SALES LIST</h3>
+                        <div class="card-tools text-right">
+                            <a class="btn btn-sm btn-primary"
+                               href="~/Admin/AddUpdateSales">
+                                <i class="fa fa-plus"></i> Add New
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>VENDOR NAME<sup style="color:red">*</sup> </label>
+                                    <select class="form-control form-control-sm" name="vendor_id" id="vendor_id">
+                                        <option value="0">--Select--</option>
+                                        @foreach (var i in Model.vendor_list)
+                                        {                                           
+                                          <option value="@i.vendor_id" )>@i.vendor_name</option>       
+                                        }
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4" style="float:right;margin-top:30px">
+                                <input type="submit" values="Search" id="btnSearch" class="btn btn-info" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" id="display_table">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+     $(document).ready(function () {
+        $('#btnSearch').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("_GetSalesList", "Admin")',
+                data: { vendor_id: $('#vendor_id').val() },
+                success: function (result) {
+                    console.log(result);
+                    $('#display_table').html(result);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+
+

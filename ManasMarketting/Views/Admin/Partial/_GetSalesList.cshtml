@@ -1,0 +1,201 @@
+﻿@model List<ManasMarketting.Models.tbl_sales_viewmodel>
+@using ManasMarketting.Models
+
+
+<div class="card-body">
+    <input type="hidden" value="@ViewBag.FileName" id="file_name" />
+    <div class="row">
+        <div class="col-md-12">
+
+            <table class="table table-bordered table-sm table-responsive">
+                <thead>
+                    <tr>
+                        <th>
+                            Sr
+                        </th>
+                        <th>
+                            Party Name
+                        </th>
+                        <th>
+                            City Name
+                        </th>
+                        <th>
+                            GST No
+                        </th>
+                        <th>
+                            Bill No
+                        </th>
+                        <th>
+                            Bill Date
+                        </th>
+                        <th>
+                            HSN Code
+                        </th>
+                        <th>
+                            UD Amount-2
+                        </th>
+                        <th>
+                            Total Qty
+                        </th>
+                        <th>
+                            Total Tax(%)
+                        </th>
+                        <th>
+                            Total CGST Amount
+                        </th>
+                        <th>
+                            Total SGST Amount
+                        </th>
+                        <th>
+                            GST Sale 12%
+                        </th>
+                        <th>
+                            CGST Output 6%
+                        </th>
+                        <th>
+                            SGST Output 6%
+                        </th>
+                        <th>
+                            GST Sale 5%
+                        </th>
+                        <th>
+                            CGST Output 2.5%
+                        </th>
+                        <th>
+                            SGST Output 2.5%
+                        </th>
+                        <th>
+                            Net Amount
+                        </th>
+                        <th>
+                            Frieght
+                        </th>
+                        <th>
+                            Bill Amount
+                        </th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int SrNo = 1;
+                        foreach (var i in Model.Select(s => new { s.BILL_NO, s.BILL_DATEe, s.sales_id, s.FRIEGHT, s.BILL_AMOUNT, s.vendor_name, s.city_name, s.GST_NO }).Distinct())
+                        {
+                            int rowspan = Model.Where(w => w.sales_id == i.sales_id).Count();
+                            int flag = 0;
+                            foreach (var j in Model.Where(w => w.sales_id == i.sales_id))
+                            {
+                                if (flag == 0)
+                                {
+                                    <tr>
+                                        <th rowspan="@rowspan">@SrNo</th>
+                                        <td rowspan="@rowspan"> @i.vendor_name </td>
+                                        <td rowspan="@rowspan"> @i.city_name </td>
+                                        <td rowspan="@rowspan"> @i.GST_NO </td>
+                                        <td rowspan="@rowspan"> @i.BILL_NO </td>
+                                        <td rowspan="@rowspan"> @i.BILL_DATEe </td>
+                                        <td> @j.hsn_code </td>
+                                        <td> @j.UD_AMOUNT_2 </td>
+                                        <td> @j.TOTAL_QUANTITY </td>
+                                        <td> @j.TOTAL_TAX</td>
+                                        <td> @j.TOTAL_CGST_AMOUNT</td>
+                                        <td> @j.TOTAL_SGST_AMOUNT</td>
+                                        <td>
+                                            @if(j.TOTAL_TAX==12){
+                                                @(j.TOTAL_CGST_AMOUNT+j.TOTAL_CGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 12)
+                                            {
+                                                @(j.TOTAL_CGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 12)
+                                            {
+                                                @(j.TOTAL_SGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 5)
+                                            {
+                                                @(j.TOTAL_CGST_AMOUNT + j.TOTAL_CGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 5)
+                                            {
+                                                @(j.TOTAL_CGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 5)
+                                            {
+                                                @(j.TOTAL_SGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td> @(j.TOTAL_SGST_AMOUNT+j.TOTAL_CGST_AMOUNT+j.UD_AMOUNT_2)</td>
+                                        <td rowspan="@rowspan"> @i.FRIEGHT</td>
+                                        <td rowspan="@rowspan"> @i.BILL_AMOUNT</td>
+                                    </tr>
+                                    flag = flag + 1;
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td> @j.hsn_code </td>
+                                        <td> @j.UD_AMOUNT_2 </td>
+                                        <td> @j.TOTAL_QUANTITY </td>
+                                        <td> @j.TOTAL_TAX</td>
+                                        <td> @j.TOTAL_CGST_AMOUNT</td>
+                                        <td> @j.TOTAL_SGST_AMOUNT</td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 12)
+                                            {
+                                                @(j.TOTAL_CGST_AMOUNT + j.TOTAL_CGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 12)
+                                            {
+                                                @(j.TOTAL_CGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 12)
+                                            {
+                                                @(j.TOTAL_SGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 5)
+                                            {
+                                                @(j.TOTAL_CGST_AMOUNT + j.TOTAL_CGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 5)
+                                            {
+                                                @(j.TOTAL_CGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (j.TOTAL_TAX == 5)
+                                            {
+                                                @(j.TOTAL_SGST_AMOUNT)
+                                            }
+                                        </td>
+                                        <td> @(j.TOTAL_SGST_AMOUNT+j.TOTAL_CGST_AMOUNT+j.UD_AMOUNT_2)</td>
+                                    </tr>
+                                }
+                            }
+                            SrNo = SrNo + 1;
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

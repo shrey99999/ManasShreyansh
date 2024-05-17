@@ -1,0 +1,124 @@
+﻿@model List<tbl_vendor_viewmodel>
+
+@{
+    ViewData["Title"] = "VendorList";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+    int SrNo = 1;
+    string DateFrom = "01/" + DateTime.Now.Month +"/"+ DateTime.Now.Year;
+    string DateTo = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)+"/" + DateTime.Now.Month + "/" + DateTime.Now.Year;
+}
+
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        @* <input type="hidden" value="@ViewBag.vendor_id" id="vendor_id" /> *@
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Sales Details</h4>
+                    </div>
+                    @*<nav aria-label="breadcrumb" role="navigation">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                    <a href="index.html">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                    List Candidates
+                    </li>
+                    </ol>
+                    </nav>*@
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <a class="btn btn-sm btn-primary" asp-controller="Admin" asp-action="AddUpdateSales"
+                       id="btnBack">
+                        Add New Sale
+                    </a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Admin" asp-action="VendorList"
+                       id="btnBack">
+                        Back
+                    </a>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>VENDOR NAME<sup style="color:red">*</sup> </label>
+                        <select class="form-control form-control-sm" name="vendor_id" id="vendor_id">
+                            <option value="0">--All--</option>
+                            @foreach (var i in Model)
+                            {
+                                if (i.vendor_id == ViewBag.vendor_id)
+                                {
+                                    <option value="@i.vendor_id" selected>@i.vendor_name</option>
+                                }
+                                else
+                                {
+                                    <option value="@i.vendor_id">@i.vendor_name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Date From</label>
+                    <input type="text" class="form-control form-control-sm" id="date_from" value="@DateFrom" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Date To</label>
+                    <input type="text" class="form-control form-control-sm" id="date_to" value="@DateTo" />
+                </div>
+                <div class="col-md-1 form-group">
+                    <label style="color:white">Date</label> 
+                    <input type="button" class="btn btn-primary btn-sm" value="Search" id="btnSearch" />
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label style="color:white">To</label>
+                        <a href="#" class="btn btn-sm btn-success" id="btnExportExcel">
+                            <i class="fa fa-file-excel-o"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-12" id="display_table">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#date_from').datepicker({
+            dateFormat: "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true
+        });
+        $('#date_to').datepicker({
+            dateFormat: "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true
+        });
+        var GetDetails = function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("_GetSalesList", "Admin")',
+                data: { vendor_id: $('#vendor_id').val(), date_from: $('#date_from').val(), date_to: $('#date_to').val() },
+                success: function (result) {
+                    console.log(result);
+                    $('#btnExportExcel').attr("href", "/manas/Temp/" + $('#file_name').val());
+                    $('#display_table').html(result);
+                }
+            });
+        };
+
+        $('#btnSearch').click(function () {
+            GetDetails();
+        })
+
+        GetDetails();
+    });
+</script>
+
+

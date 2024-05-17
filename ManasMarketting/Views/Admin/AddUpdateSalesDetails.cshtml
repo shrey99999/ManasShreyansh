@@ -1,0 +1,342 @@
+﻿
+@{
+    ViewData["Title"] = "AddUpdateSalesDetails";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
+
+@model ManasMarketting.Models.tbl_sales_viewmodel
+@using ManasMarketting.Models
+
+
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        @if (Model.sales_id< 1)
+                        {
+                            <h3 class="card-title">Add Sales Details</h3>
+                        }
+                        else{
+                            <h3 class="card-title">Update Sales Details</h3>
+                        }
+                    </div>
+                    <input type="hidden" id="sales_id" value="@Model.sales_id" />
+                    <input type="hidden" id="city_id1" value="@Model.city_id" />
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <a class="btn btn-sm btn-primary" asp-controller="Admin" asp-action="GetSalesDetails"
+                       id="btnBack">
+                        <i class="fa fa-eye"></i>
+                        View Sales List
+                    </a>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>VENDOR NAME<sup style="color:red">*</sup> </label>
+                        <select class="form-control form-control-sm" name="vendor_id" id="vendor_id">
+                            <option value="0">--Select--</option>
+                            @foreach (var i in Model.vendor_list)
+                            {
+                                @if (i.vendor_id == Model.vendor_id)
+                                {
+                                    <option value="@i.vendor_id" selected>@i.vendor_name</option>
+                                }
+                                else
+                                {
+                                    <option value="@i.vendor_id" )>@i.vendor_name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>GST NO.<sup style="color:red">*</sup></label>
+                        <input type="text" name="GST_NO" id="GST_NO" class="form-control form-control-sm" value="@Model.GST_NO" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>STATE <sup style="color:red">*</sup></label>
+                        <select class="form-control form-control-sm" name="state_id" id="state_id">
+                            <option value="0">--Select--</option>
+                            @foreach (var i in Model.state_list)
+                            {
+                                @if (i.state_id == Model.state_id)
+                                {
+                                    <option value="@i.state_id" selected>@i.state_name</option>
+                                }
+                                else
+                                {
+                                    <option value="@i.state_id">@i.state_name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>CITY <sup style="color:red">*</sup></label>
+                        <select class="form-control form-control-sm" value="@Model.city_id" id="city_id">
+                            <option value="0">--Select--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>BILL NO. <sup style="color:red">*</sup></label>
+                        <input type="text" name="BILL_NO" id="BILL_NO" class="form-control form-control-sm" value="@Model.BILL_NO" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>BILL DATE <sup style="color:red">*</sup></label>       
+                        <input type="text" name="BILL_DATE" id="BILL_DATE" class="form-control form-control-sm" value="@Model.BILL_DATE" />
+                    </div>
+                </div>
+                <div class="col-lg-12" id="display_sales_table"></div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>FRIEGHT <sup style="color:red">*</sup></label>
+                        <input type="text" name="FRIEGHT" id="FRIEGHT" class="form-control form-control-sm" value="@Model.FRIEGHT" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>BILL AMOUNT <sup style="color:red">*</sup></label>
+                        <input type="text" n id="BILL_AMOUNT" class="form-control form-control-sm" value="@Model.BILL_AMOUNT" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @if (Model.sales_id < 1)
+                        {
+                            <input type="submit" value="Add" class="btn btn-sm btn-success" id="btnSave" />
+                        }
+                        else
+                        {
+                            <input type="submit" value="Update" class="btn btn-sm btn-success" id="btnSave" />
+                        }
+                        <input type="Reset" value="Reset" class="btn btn-sm btn-danger" id="btnReset" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#BILL_DATE').datepicker({
+            dateFormat: "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true
+        });
+        var getcity = function () {
+            var state_id = $("#state_id").val();
+            $.ajax({
+                url: "@Url.Action("Getcity", "Admin")",
+                type: "post",
+                datatype: 'json',
+                data: { state_id: state_id },
+                success: function (data) {
+                    console.log(data);
+                    debugger;
+                    $("#city_id").empty();
+                    $("#city_id").append($("<option></option>").val(0).html('--Select--'));
+                    $.each(data, function (i, d) {
+                        if (d.city_id == $('#city_id1').val()) {
+                            $("#city_id").append($("<option selected></option>").val(d.city_id).html(d.city_name));
+                        }
+                        else {
+                            $("#city_id").append($("<option></option>").val(d.city_id).html(d.city_name));
+                        }
+                    });
+                },
+
+            });
+        }
+
+        var state_id = parseInt($("#state_id").val());
+        if (state_id > 0) {
+            getcity();
+        }
+        $('#state_id').change(function () {
+            getcity();
+        });
+
+        $('#btnSave').click(function () {
+            debugger;
+            var sales_id = $('#sales_id').val();
+            var vendor_id = $('#vendor_id').val();
+            var state_id = $('#state_id').val();
+            var city_id = $('#city_id').val();
+            var GST_NO = $('#GST_NO').val();
+            var BILL_NO = $('#BILL_NO').val();
+          
+            var FRIEGHT = $('#FRIEGHT').val();
+           
+            var BILL_DATE = $('#BILL_DATE').val();
+            var BILL_AMOUNT = $('#BILL_AMOUNT').val();
+
+
+            if (vendor_id == "0") {
+                swal("", "Please Select Vendor Name ", "warning")
+                return false;
+
+            }
+            else if (GST_NO == "") {
+                swal("", "Please Enter GST", "warning")
+                return false;
+            }
+            else if (state_id == "0") {
+                swal("", "Please Select State", "warning")
+                return false;
+            }
+            else if (city_id == "0") {
+                swal("", "Please Select City", "warning")
+                return false;
+            }
+            else if (BILL_NO == "") {
+                swal("", "Please Enter BILL_NO", "warning")
+                return false;
+            } 
+            else if (FRIEGHT == "") {
+                swal("", "Please Enter FRIEGHT", "warning")
+                return false;
+            }
+            else if (BILL_DATE == "") {
+                swal("", "Please Enter BILL DATE", "warning")
+                return false;
+            }
+            else if (BILL_AMOUNT == "") {
+                swal("", "Please Enter BILL AMOUNT", "warning")
+                return false;
+            }
+
+            var obj = {
+                sales_id: parseInt(sales_id),
+                vendor_id: vendor_id,
+                state_id: state_id,
+                city_id: city_id,
+                GST_NO: GST_NO,
+                BILL_NO: BILL_NO,
+                FRIEGHT: FRIEGHT,               
+                BILL_DATE: BILL_DATE,
+                BILL_AMOUNT: BILL_AMOUNT,
+            };
+            loader.load();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UpdateSalesDetails", "Admin") ',
+                dataType: 'json',
+                data: obj,
+                success: function (result) {
+                    // if (result.status == an.type.error) {
+                    //     toastr.error('result.msg', 'Sorry')
+                    // }
+                    if (result.status == 0) {
+                        swal({
+                            text: result.msg,
+                            type: 'error',
+                            title:'Sorry !'
+                        });
+                    }
+                    else{
+                        swal({
+                            text: result.msg,
+                            type: 'success',
+                        }).then(function () {
+                            reload();
+                        });
+                    }
+                },
+                statusCode: {
+                    500: function () {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Server error'
+                        });
+                    },
+                    0: function () {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Internet Connection was broken'
+                        });
+                    }
+                },
+                error: function (xhr, result) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: result
+                    });
+                    if (result === 'parsererror') {
+                        reload();
+                    }
+                },
+                complete: function () {
+                    loader.remove();
+                }
+            });
+        });
+       
+        $('#btnReset').click(function () {            
+            var vendor_id = $('#vendor_id').val('0');
+            var state_id = $('#state_id').val('0');
+            var city_id = $('#city_id').val('0');
+            var GST_NO = $('#GST_NO').val('');
+            var BILL_NO = $('#BILL_NO').val('');
+            var FRIEGHT = $('#FRIEGHT').val('');
+            var BILL_DATE = $('#BILL_DATE').val('');
+            var BILL_AMOUNT = $('#BILL_AMOUNT').val('');
+        });
+
+        var GetDetailsByBillNo = function () {
+            var BILL_NO = $('#BILL_NO').val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("_GetDetailsByBillNo","Admin")',
+                data: { BILL_NO: BILL_NO },
+                success: function (result) { 
+
+                    $('#display_sales_table').html(result);
+
+                }
+            });
+        }
+        GetDetailsByBillNo();
+    });
+</script>
+
+
+
+
+
+
+
+<!-- Validation for Numeric and Character-->
+<script>
+    $('#FRIEGHT,#BILL_AMOUNT').on('input', function () {
+
+        $(this).val(function (index, value) {
+            return value.replace(/[^0-9.]/g, '');
+        });
+    });
+    // $('#client_name').on('input', function () {
+    //     $(this).val(function (index, value) {
+    //         return value.replace(/[^a-zA-Z]/g, '');
+    //     });
+    // });
+</script>
+
+
+

@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "UploadSalesExcel";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
+
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Upload Excel File</h4>
+                    </div>
+                    @*<nav aria-label="breadcrumb" role="navigation">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                    <a href="index.html">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                    List Candidates
+                    </li>
+                    </ol>
+                    </nav>*@
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Excel File Upload</label>
+                        <input type="file" name="file_name" id="file_name" class="form-control form-control-sm">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label style="color:white">ExcelFile Upload</label>
+                        <input type="submit" value="Add" class="btn btn-sm btn-primary" id="btnUploadExcel" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+
+        // ShowDetails();
+
+        $('#btnUploadExcel').click(function () {
+
+            var formData = new FormData();
+
+            var uploaded_files = $("#file_name").get(0);
+            var files = uploaded_files.files;
+
+            for (var i = 0; i < files.length; i++) {
+                formData.append('postedFile', files[i]);
+            }
+
+            loader.load();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UploadPurcahseExcel", "Admin")',
+                //url: '/RDSO/SaveUserMaster',
+                contentType: false,
+                processData: false,
+                /* dataType: 'json',*/
+                data: formData,
+                success: function (result) {
+
+                    if (result.status > 0) {
+                        swal({
+                            text: result.msg,
+                            type: 'success',
+                        }).then(function () {
+                            loader.remove();
+                            ShowDetails();
+                        });
+                    }
+                    if (result.status < 1) {
+                        swal({
+                            text: result.msg,
+                            type: 'failure',
+                        }).then(function () {
+                            loader.remove();
+                            ShowDetails();
+                        });
+                    }
+                },
+                statusCode: {
+                    500: function () {
+                        toastr.error('Server error', 'Sorry')
+                    },
+                    0: function () {
+                        toastr.error('Internet Connection was broken', 'Sorry')
+                    }
+                },
+                error: function (xhr, result) {
+                    toastr.error(result, 'Sorry')
+                    if (result === 'parsererror') {
+                        reload();
+                    }
+                },
+                complete: function () {
+                    loader.remove();
+                }
+            });
+        });
+    });
+</script>

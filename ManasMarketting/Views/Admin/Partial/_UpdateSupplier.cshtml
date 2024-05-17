@@ -1,0 +1,164 @@
+﻿@using ManasMarketting.Models
+@model ManasMarketting.Models.tbl_supplier_viewmodel
+
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            @if (Model.supplier_id < 1)
+            {
+                <h2 class="h3 mb-0">Add Supplier</h2>
+            }
+            else
+            {
+                <h2 class="h3 mb-0">Update Supplier</h2>
+            }
+            <input type="hidden" id="supplier_id" value="@Model.supplier_id" name="supplier_id" />
+            <input type="hidden" id="city_id1" value="@Model.city_id" />
+        </div>
+    </div>
+
+    <hr />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label>Supplier Name</label>
+                @Html.HiddenFor(model => model.supplier_id)
+                @Html.TextBoxFor(model => model.supplier_name, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="form-group">
+                <label>Gst No</label>
+                @Html.TextBoxFor(model => model.gst_no, new { @class = "form-control form-control-sm" })
+
+            </div>
+            <div class="form-group">
+                <label>State</label>
+                <select class="form-control form-control-sm" name="state_id" id="state_id">
+                    <option value="0">--Select--</option>
+                    <option>Uttar Pradesh</option>
+
+                    @foreach (var i in Model.state_list)
+                    {
+                        @if (i.state_id == Model.state_id)
+                        {
+                            <option value="@i.state_id" selected>@i.state_name</option>
+                        }
+                        else
+                        {
+                            <option value="@i.state_id">@i.state_name</option>
+                        }
+                    }
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <label>City</label>
+                <select class="form-control form-control-sm" name="city_id" id="city_id">
+                    <option value="0">--Select--</option>
+                    
+                    @foreach (var i in Model.city_list)
+                    {
+                        @if (i.city_id == Model.city_id)
+                        {
+                            <option value="@i.city_id" selected>@i.city_name</option>
+                        }
+                        else
+                        {
+                            <option value="@i.city_id" )>@i.city_name</option>
+                        }
+
+                    }
+
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="status" name="status" />
+
+                    <label class="form-check-label">Active</label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            @if (Model.supplier_id < 1)
+            {
+                <input type="submit" value="Save" id="btnSave" class="btn btn-sm btn-success" onclick="FormValidation()" />
+            }
+            else
+            {
+                <input type="submit" value="Update" id="btnSave" class="btn btn-sm btn-primary" onclick="FormValidation()" />
+            }
+           
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        var getcity = function () {
+            var state_id = $("#state_id").val();
+            $.ajax({
+                url: "@Url.Action("Getcity", "Admin")",
+                type: "post",
+                datatype: 'json',
+                data: { state_id: state_id },
+                success: function (data) {
+                    console.log(data);
+                    debugger;
+                    $("#city_id").empty();
+                    $("#city_id").append($("<option></option>").val(0).html('--Select--'));
+                    $.each(data, function (i, d) {
+                        if (d.city_id == $('#city_id1').val()) {
+                            $("#city_id").append($("<option selected></option>").val(d.city_id).html(d.city_name));
+                        }
+                        else {
+                            $("#city_id").append($("<option></option>").val(d.city_id).html(d.city_name));
+                        }
+                    });
+                },
+
+            });
+        }
+
+        var state_id = parseInt($("#state_id").val());
+
+        if (state_id > 0) {
+            getcity();
+        }
+        $('#state_id').change(function () {
+            getcity();
+        });
+
+    });
+    function FormValidation() { 
+        debugger
+      
+        var v_name = $("#supplier_name").val();
+        var s_id = $("#state_id").val();
+        var c_id = $("#city_id").val();
+
+        if (v_name == "") {
+            swal("", "Please Enter Supplier Name ", "warning")
+            return false;
+
+        }
+        else if (s_id == 0) {
+            swal("", "Please Select State", "warning")
+            return false;
+        }
+        else if (c_id == 0) {
+            swal("", "Please Select City", "warning")
+            return false;
+        }
+    }
+</script>

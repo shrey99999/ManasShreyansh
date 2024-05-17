@@ -1,0 +1,224 @@
+﻿
+@{
+    ViewData["Title"] = "VendorList";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+    int SrNo = 1;
+}
+@model List<ManasMarketting.Models.tbl_vendor_viewmodel>
+
+
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        <h4>Vendor Master</h4>
+                    </div>
+                    @*<nav aria-label="breadcrumb" role="navigation">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                    <a href="index.html">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                    List Candidates
+                    </li>
+                    </ol>
+                    </nav>*@
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <a class="btn btn-sm btn-primary"
+                       href="#" data-detail="@Newtonsoft.Json.JsonConvert.SerializeObject(Model)" id="btnNew">
+                        <i class="fa fa-plus"></i> Add New
+                    </a>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-12">
+
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Sr.No.
+                                </th>
+                                <th>
+                                    Vendor Name
+                                </th>
+                                <th>
+                                    GST No
+                                </th>
+                                <th>
+                                    Location
+                                </th>
+                                <th>
+                                    Sales Amount
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var i in Model.Select(s => new { s.vendor_id, s.vendor_name, s.gst_no, s.sales_amount }).Distinct().OrderBy(o => o.vendor_name))
+                                {
+                                    <tr data-detail="@Newtonsoft.Json.JsonConvert.SerializeObject(i)">
+
+                                        <th scope="row">@SrNo</th>
+
+                                        <td>@i.vendor_name</td>
+                                        <td>@i.gst_no </td>
+                                        <td>
+                                            @foreach (var l in Model.Where(w => w.vendor_id == i.vendor_id))
+                                            {
+                                                @Html.Raw(l.city_name+"-"+l.state_name)
+                                                <br />
+                                            }
+                                        </td>
+                                        <td class="text-right">
+                                            <a asp-controller="admin" asp-action="SalesReport" asp-route-vendor_id="@i.vendor_id" class="text-blue">@i.sales_amount</a>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-success" id="btnEdit">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    SrNo = SrNo + 1;
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#btnNew,#btnEdit',).click(function () {
+            debugger;
+            console.log("clicked");
+            if ($.inArray($(this).attr('id'), ['btnEdit', 'btnNew']) < 0) {
+                return true;
+            }
+            var arr = {};
+
+            if (($(this).attr('id') === 'btnEdit') || ($(this).attr('id') === 'btnNew')) {
+                if ($(this).attr('id') === 'btnEdit') {
+                    arr = JSON.parse($(this).closest('tr').attr('data-detail'));
+                }
+                if ($(this).attr('id') === 'btnNew') {
+                    arr = JSON.parse($(this).attr('data-detail'));
+                }
+                // loader.load();
+                $.post('@Url.Action("_UpdateVendor", "Admin")', arr).done(function (result) {
+                    //resultReload(result);
+                    mdlA.content = result;
+                    mdlA.id = 'mymodal';
+                    mdlA.options.backdrop = 'static';
+                    mdlA.alert(mdlA.size.default);
+                    $('button.close span,#mdlCancel').unbind().click(function () {
+                        mdlA.dispose();
+                    });
+
+                  
+                    $('#btnSave').click(function () {
+                        debugger;
+                        var vendor_id = $('#vendor_id').val();
+                        var gst_no = $('#gst_no').val();
+                        var vendor_name = $('#vendor_name').val();
+                        var state_id = $('#state_id').val();
+                        var city_id = $('#city_id').val();
+                        var status = $("#status").is(":checked");
+                        var obj = {
+                            vendor_id: parseInt(vendor_id),
+                            vendor_name: vendor_name,
+                            gst_no: gst_no,
+                            state_id: state_id,
+                            city_id: city_id,
+                            status: status
+                        };
+                        btnloader.load();
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("AddUpdateVendor", "Admin") ',
+
+                            dataType: 'json',
+                            data: obj,
+                            success: function (result) {
+                                if (result.status == an.type.error) {
+                                    toastr.error('result.msg', 'Sorry')
+                                }
+                                if (result.status > 0) {
+                                    mdlA.dispose();
+                                    swal({
+                                        text: result.msg,
+                                        type: 'success',
+                                    }).then((value) => function () {
+                                        reload();
+                                    });
+                                }
+                            },
+
+                            statusCode: {
+                                500: function () {
+                                    Toast.fire({
+                                        icon: 'error',
+                                        title: 'Server error'
+                                    });
+                                },
+                                0: function () {
+                                    Toast.fire({
+                                        icon: 'error',
+                                        title: 'Internet Connection was broken'
+                                    });
+                                }
+                            },
+                            error: function (xhr, result) {
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: result
+                                });
+                                if (result === 'parsererror') {
+                                    reload();
+                                }
+                            },
+                            complete: function () {
+                                btnloader.remove();
+                            }
+                        });
+                    });
+                   
+                }).catch(function (xhr, e, msg) {
+
+                }).fail(function (xhr) {
+                    if (xhr.status == 500) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Server error'
+                        });
+                    }
+                    if (xhr.status == 0) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Internet Connection was broken'
+                        });
+                    }
+                }).always(function () {
+                    loader.remove();
+                });
+            }
+        });
+    });
+      
+        
+      
+</script>
+
+

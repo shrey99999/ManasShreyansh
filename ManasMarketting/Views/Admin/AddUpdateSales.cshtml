@@ -1,0 +1,405 @@
+﻿
+@{
+    ViewData["Title"] = "ExcelUpload";
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
+@model ManasMarketting.Models.tbl_sales_viewmodel 
+@using ManasMarketting.Models
+
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        @if (Model.sales_id < 1)
+                        {
+                            <h4>Sales Details</h4>
+                        }
+                        else
+                        {
+                            <h3 class="card-title">Edit Sales</h3>
+                        }
+                    </div>
+                    @*<nav aria-label="breadcrumb" role="navigation">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                    <a href="index.html">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                    List Candidates
+                    </li>
+                    </ol>
+                    </nav>*@
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <a class="btn btn-sm btn-primary" asp-controller="Admin" asp-action="SalesReport"
+                       id="btnBack">
+                        Back
+                    </a>
+                </div>
+                <!-- Left col -->
+               
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>VENDOR NAME<sup style="color:red">*</sup> </label>
+                        <select class="form-control form-control-sm" name="vendor_id" id="vendor_id">
+                            <option value="0">--Select--</option>
+                            @foreach (var i in Model.vendor_list)
+                            {
+                                @if (i.vendor_id == Model.vendor_id)
+                                {
+                                    <option value="@i.vendor_id" selected>@i.vendor_name</option>
+                                }
+                                else
+                                {
+                                    <option value="@i.vendor_id" )>@i.vendor_name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>GST NO.<sup style="color:red">*</sup></label>
+                        <input type="text" name="GST_NO" id="GST_NO" class="form-control form-control-sm" value="@Model.GST_NO" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>BILL NO.</label>
+                        <input type="text" name="BILL_NO" id="BILL_NO" class="form-control form-control-sm" value="@Model.BILL_NO" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>STATE</label>
+                        <select class="form-control form-control-sm" name="state_id" id="state_id">
+                            <option value="0">--Select--</option>
+                            @foreach (var i in Model.state_list)
+                            {
+                                @if (i.state_id == Model.state_id)
+                                {
+                                    <option value="@i.state_id" selected>@i.state_name</option>
+                                }
+                                else
+                                {
+                                    <option value="@i.state_id">@i.state_name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>CITY</label>
+                        <select class="form-control custom-select2" name="city_id" id="city_id">
+                            <option value="0">--Select--</option>
+                            @foreach (var i in Model.city_list)
+                            {
+                                @if (i.city_id == Model.city_id)
+                                {
+                                    <option value="@i.city_id" selected>@i.city_name</option>
+                                }
+                                else
+                                {
+                                    <option value="@i.city_id" )>@i.city_name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>HSN CODE</label>
+                        <input type="text" name="hsn_code" id="hsn_code" class="form-control form-control-sm" value="@Model.hsn_code" />
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>UD AMOUNT 2</label>
+                        <input type="text" name="UD_AMOUNT_2" id="UD_AMOUNT_2" class="form-control form-control-sm" value="@Model.UD_AMOUNT_2 " />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>TOTAL QUANTITY</label>
+                        <input type="text" name="TOTAL_QUANTITY" id="TOTAL_QUANTITY" class="form-control form-control-sm" value="@Model.TOTAL_QUANTITY " />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>TOTAL TAX(%)</label>
+                        <input type="text" name="TOTAL_TAX" id="TOTAL_TAX" class="form-control form-control-sm" value="@Model.TOTAL_TAX " />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>TOTAL CGST AMOUNT</label>
+                        <input type="text" name="TOTAL_CGST_AMOUNT" id="TOTAL_CGST_AMOUNT" class="form-control form-control-sm" value="@Model.TOTAL_CGST_AMOUNT " />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>TOTAL SGST AMOUNT</label>
+                        <input type="text" name="TOTAL_SGST_AMOUNT" id="TOTAL_SGST_AMOUNT" class="form-control form-control-sm" value="@Model.TOTAL_SGST_AMOUNT" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>FRIEGHT</label>
+                        <input type="text" name="FRIEGHT" id="FRIEGHT" class="form-control form-control-sm" value="@Model.FRIEGHT" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>GST SALE 12%</label>
+                        <input type="text" name="GST_SALE_12" id="GST_SALE_12" class="form-control form-control-sm" value="@Model.GST_SALE_12" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>SGST OUTPUT 6%</label>
+                        <input type="text" name="SGST_OUTPUT_6" id="SGST_OUTPUT_6" class="form-control form-control-sm" value="@Model.SGST_OUTPUT_6 " />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>CGST OUTPUT 6%</label>
+                        <input type="text" name="CGST_OUTPUT_6" id="CGST_OUTPUT_6" class="form-control form-control-sm" value="@Model.CGST_OUTPUT_6 " />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>GST SALE 5%</label>
+                        <input type="text" name="GST_SALE_5" id="GST_SALE_5" class="form-control form-control-sm" value="@Model.GST_SALE_5" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>CGST OUTPUT 2.5%</label>
+                        <input type="text" name="CGST_OUTPUT_2" id="CGST_OUTPUT_2" class="form-control form-control-sm" value="@Model.CGST_OUTPUT_2 " />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>NET AMOUNT</label>
+                        <input type="text" name="NET_AMOUNT" id="NET_AMOUNT" class="form-control form-control-sm" value="@Model.NET_AMOUNT " />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>BILL AMOUNT</label>
+                        <input type="text" name="BILL_AMOUNT" id="BILL_AMOUNT" class="form-control form-control-sm" value="@Model.BILL_AMOUNT" />
+                    </div>
+                </div>
+                <br />
+                <br />
+            </div>
+            <div class="row">
+                <div class="col-md-5"></div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @if (Model.sales_id < 1)
+                        {
+                            <input type="submit" value="Add" class="btn btn-success" id="btnSave" onclick="FormValidation()" />
+                            <input type="Reset" value="Reset" class="btn btn-danger" id="resetButton" />
+                        }
+                        else
+                        {
+                            <input type="submit" value="Update" class="btn btn-outline-success" id="btnSave" onclick="FormValidation()" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        var getcity = function () {
+            var state_id = $("#state_id").val();
+            $.ajax({
+                url: "@Url.Action("Getcity", "Admin")",
+                type: "post",
+                datatype: 'json',
+                data: { state_id: state_id },
+                success: function (data) {
+                    console.log(data);
+                    debugger;
+                    $("#city_id").empty();
+                    $("#city_id").append($("<option></option>").val(0).html('--Select--'));
+                    $.each(data, function (i, d) {
+                        if (d.city_id == $('#city_id1').val()) {
+                            $("#city_id").append($("<option selected></option>").val(d.city_id).html(d.city_name));
+                        }
+                        else {
+                            $("#city_id").append($("<option></option>").val(d.city_id).html(d.city_name));
+                        }
+                    });
+                },
+
+            });
+        }
+
+        var state_id = parseInt($("#state_id").val());
+        if (state_id > 0) {
+            getcity();
+        }
+        $('#state_id').change(function () {
+            getcity();
+        });
+        $('#btnSave').click(function () {
+            debugger;
+            var sales_id = $('#sales_id').val();
+            var vendor_id = $('#vendor_id').val();
+            var state_id = $('#state_id').val();
+            var city_id = $('#city_id').val();
+            var GST_NO = $('#GST_NO').val();
+            var BILL_NO = $('#BILL_NO').val();
+            var hsn_code = $('#hsn_code').val();
+            var UD_AMOUNT_2 = $('#UD_AMOUNT_2').val();
+            var TOTAL_QUANTITY = $('#TOTAL_QUANTITY').val();
+            var TOTAL_TAX = $('#TOTAL_TAX').val();
+            var TOTAL_CGST_AMOUNT = $('#TOTAL_CGST_AMOUNT').val();
+            var TOTAL_SGST_AMOUNT = $('#TOTAL_SGST_AMOUNT').val();
+            var FRIEGHT = $('#FRIEGHT').val();
+            var GST_SALE_12 = $('#GST_SALE_12').val();
+            var SGST_OUTPUT_6 = $('#SGST_OUTPUT_6').val();
+            var CGST_OUTPUT_6 = $('#CGST_OUTPUT_6').val();
+            var GST_SALE_5 = $('#GST_SALE_5').val();
+            var CGST_OUTPUT_2 = $('#CGST_OUTPUT_2').val();
+            var NET_AMOUNT = $('#NET_AMOUNT').val();
+            var BILL_AMOUNT = $('#BILL_AMOUNT').val();
+
+            var obj = {
+                sales_id: parseInt(sales_id),
+                vendor_id: vendor_id,
+                state_id: state_id,
+                city_id: city_id,
+                GST_NO: GST_NO,
+                BILL_NO: BILL_NO,
+                hsn_code: hsn_code,
+                UD_AMOUNT_2: UD_AMOUNT_2,
+                TOTAL_QUANTITY: TOTAL_QUANTITY,
+                TOTAL_TAX: TOTAL_TAX,
+                TOTAL_CGST_AMOUNT: TOTAL_CGST_AMOUNT,
+                TOTAL_SGST_AMOUNT: TOTAL_SGST_AMOUNT,
+                FRIEGHT: FRIEGHT,
+                GST_SALE_12: GST_SALE_12,
+                SGST_OUTPUT_6: SGST_OUTPUT_6,
+                CGST_OUTPUT_6: CGST_OUTPUT_6,
+                GST_SALE_5: GST_SALE_5,
+                CGST_OUTPUT_2: CGST_OUTPUT_2,
+                NET_AMOUNT: NET_AMOUNT,
+                BILL_AMOUNT: BILL_AMOUNT,
+            };
+            btnloader.load();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AddUpdateSales", "Admin") ',
+
+                dataType: 'json',
+                data: obj,
+                success: function (result) {
+                    if (result.status == an.type.error) {
+                        toastr.error('result.msg', 'Sorry')
+                    }
+                    if (result.status > 0) {
+                        swal({
+                            text: result.msg,
+                            type: 'success',
+                        }).then(function () {
+                               reload();
+                        });
+                    }
+                },
+                statusCode: {
+                    500: function () {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Server error'
+                        });
+                    },
+                    0: function () {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Internet Connection was broken'
+                        });
+                    }
+                },
+                error: function (xhr, result) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: result
+                    });
+                    if (result === 'parsererror') {
+                        reload();
+                    }
+                },
+                complete: function () {
+                    btnloader.remove();
+                }
+            });
+        });
+       
+    });
+    function FormValidation() {
+        debugger;
+        var v_name = $("#vendor_id").val();
+        var s_id = $("#state_id").val();
+        var c_id = $("#city_id").val();
+        var GST = $('#GST_NO').val();
+
+        if (v_name == "0") {
+            swal("", "Please Select Vendor Name ", "warning")
+            return false;
+
+        }
+        else if (GST == "") {
+            swal("", "Please Enter GST", "warning")
+            return false;
+        }
+        else if (s_id == "0") {
+            swal("", "Please Select State", "warning")
+            return false;
+        }
+        else if (c_id == "0") {
+            swal("", "Please Select City", "warning")
+            return false;
+        }
+    }
+</script>
+<script>
+    document.getElementById("resetButton").addEventListener("click", function () {
+        document.getElementById("vendor_id").value = '';
+        document.getElementById("GST_NO").value = '';
+        document.getElementById("BILL_NO").value = '';
+        document.getElementById("state_id").value = '';
+        document.getElementById("city_id").value = '';
+        document.getElementById("hsn_code").value = '';
+        document.getElementById("UD_AMOUNT_2").value = '';
+        document.getElementById("TOTAL_QUANTITY").value = '';
+        document.getElementById("TOTAL_TAX").value = '';
+        document.getElementById("TOTAL_CGST_AMOUNT").value = '';
+        document.getElementById("TOTAL_SGST_AMOUNT").value = '';
+        document.getElementById("FRIEGHT").value = '';
+        document.getElementById("GST_SALE_12").value = '';
+        document.getElementById("SGST_OUTPUT_6").value = '';
+        document.getElementById("CGST_OUTPUT_6").value = '';
+        document.getElementById("GST_SALE_5").value = '';
+        document.getElementById("CGST_OUTPUT_2").value = '';
+        document.getElementById("NET_AMOUNT").value = '';
+        document.getElementById("BILL_AMOUNT").value = '';
+
+    });
+</script>
+

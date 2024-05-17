@@ -1,0 +1,88 @@
+﻿
+
+<div class="sidebar-menu">
+    <ul id="accordion-menu">
+        <li>
+            <a href="@Url.Action("Index","Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-pie-chart"></span><span class="mtext">Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="@Url.Action("SupplierList", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-grid-1x2"></span><span class="mtext">Supplier List</span>
+            </a>
+        </li>
+         
+         <li>
+             <a href="@Url.Action("VendorList", "Admin")" class="dropdown-toggle no-arrow">
+                 <span class="micon bi bi-grid-1x2"></span><span class="mtext">Vendor List</span>
+             </a>
+         </li>
+        
+         <li class="dropdown">
+            <a href="@Url.Action("SalesReport", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-bar-chart"></span><span class="mtext">Sales</span>
+             </a>
+
+         </li>
+        <li class="dropdown">
+            <a href="@Url.Action("PurchaseReport", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-bar-chart"></span><span class="mtext">Purchase</span>
+            </a>
+
+        </li>
+         <li class="dropdown">
+            <a href="@Url.Action("UploadBulkExcel", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-file-earmark-spreadsheet"></span><span class="mtext">Upload SalesExcel</span>
+            </a>
+         </li>
+       @*  <li class="dropdown">
+            <a href="@Url.Action("UploadPurchaseExcel", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-file-earmark-spreadsheet"></span><span class="mtext">Upload Purcahse Excel</span>
+            </a>
+        </li> *@
+        <li class="dropdown">
+            <a href="@Url.Action("UploadPurcahseExcel", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-file-earmark-spreadsheet"></span><span class="mtext">Upload Purcahse Excel</span>
+            </a>
+        </li>
+
+        <li class="dropdown">
+            <a href="@Url.Action("ListState", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-file-earmark-spreadsheet"></span><span class="mtext">List State</span>
+            </a>
+        </li>
+        <li class="dropdown">
+            <a href="@Url.Action("ListCity", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-file-earmark-spreadsheet"></span><span class="mtext">List City</span>
+            </a>
+        </li>
+        <li class="dropdown">
+            <a href="@Url.Action("AddUpdateSalesDetails", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-person"></span><span class="mtext">Update Sales</span>
+            </a>
+        </li> 
+        <li class="dropdown">
+            <a href="@Url.Action("AddUpdatePurcahse", "Admin")" class="dropdown-toggle no-arrow">
+                <span class="micon bi bi-person"></span><span class="mtext">Update Purchase</span>
+            </a>
+        </li> 
+      
+        @*<li class="dropdown">
+            <a href="javascript:;" class="dropdown-toggle">
+                <span class="micon bi bi-envelope"></span><span class="mtext">Allotment</span>
+            </a>
+
+            <ul class="submenu">
+                <li>
+        <a href="@Url.Action("UpdateAllotment", "Admin")">Allotment Add</a>
+                </li>
+                <li>
+        <a href="@Url.Action("ListAllotment", "Admin")">Allotment List</a>
+                </li>
+            </ul>
+
+        </li> *@
+    </ul>
+</div>

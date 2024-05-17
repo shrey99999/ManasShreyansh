@@ -1,0 +1,110 @@
+﻿@model ManasMarketting.Models.tbl_sales_viewmodel
+
+<div class="pd-ltr-20 xs-pd-20-10">
+  
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="title">
+                @if (Model.sales_detail_id < 1)
+                {
+                    <h3 class="h3">Add Bill Details</h3>
+                }
+                else
+                {
+                    <h3 class="h3">Update Bill Details</h3>
+                }
+            </div>
+            <input type="hidden" id="sales_detail_id" value="@Model.sales_detail_id" />
+        </div>
+        <div class="col-md-6 col-sm-12 text-right">
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>   
+    <hr class="mt-0"/>
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 pt-10">
+                    <div class="form-group">
+                        <label>HSN Code</label>
+                        <input type="text" id="hsn_code" value="@Model.hsn_code" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>UDT Amount-2</label>
+                        <input type="text" id="UD_AMOUNT_2" class="form-control form-control-sm" value="@Model.UD_AMOUNT_2" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Total Quantity </label>
+                        <input type="text" id="TOTAL_QUANTITY" value="@Model.TOTAL_QUANTITY" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Total Tax(%) </label>
+                        <input type="text" id="TOTAL_TAX" value="@Model.TOTAL_TAX" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Total CGST Amount <sup style="color:red">*</sup></label>
+                        <input type="text" id="TOTAL_CGST_AMOUNT" class="form-control form-control-sm" value="@Model.TOTAL_CGST_AMOUNT" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Total SGST Amount <sup style="color:red">*</sup></label>
+                        <input type="text" id="TOTAL_SGST_AMOUNT" class="form-control form-control-sm" value="@Model.TOTAL_SGST_AMOUNT" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @if (Model.sales_detail_id < 1)
+                        {
+                            <input type="submit" value="Add" class="btn btn-sm btn-success mt-2" id="btnSave" />
+                        }
+                        else
+                        {
+                            <input type="submit" value="Update" class="btn btn-sm btn-success mt-2" id="btnSave" />
+                        }
+                        <input type="Reset" value="Reset" class="btn btn-sm btn-danger mt-2" id="btnReset" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(document).on("click", '#btnReset', function () { 
+            var hsn_code =  $('#hsn_code').val('');
+            var UD_AMOUNT_2 = $('#UD_AMOUNT_2').val('');
+            var TOTAL_QUANTITY = $('#TOTAL_QUANTITY').val('');
+            var TOTAL_TAX = $('#TOTAL_TAX').val('');
+            var TOTAL_CGST_AMOUNT = $('#TOTAL_CGST_AMOUNT').val('');
+            var TOTAL_SGST_AMOUNT = $('#TOTAL_SGST_AMOUNT').val('');
+            var total_cgst_per = $('#total_cgst_per').val('');
+            var total_sgst_per = $('#total_sgst_per').val('');
+        });
+        $('#UD_AMOUNT_2,#TOTAL_TAX,#TOTAL_CGST_AMOUNT,#TOTAL_SGST_AMOUNT').on('input', function () {
+
+            $(this).val(function (index, value) {
+                return value.replace(/[^0-9.]/g, '');
+            });
+        });
+        $('#hsn_code,#TOTAL_QUANTITY').on('input', function () {
+
+            $(this).val(function (index, value) {
+                return value.replace(/[^0-9]/g, '');
+            });
+        });
+    });
+</script> 

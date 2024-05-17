@@ -1,0 +1,53 @@
+﻿@model List<tbl_sales_viewmodel>
+@{
+    int SrNo = 1;
+}
+
+<style>
+    .dataTable{
+        margin-left:6px;
+        padding:3px;
+    }
+</style>
+    <table class="table table-bordered" id="sales_details">
+        <thead>
+            <tr>
+            <th scope="row">SrNo.</th>
+            <th scope="row">Vendor Name</th>
+                <th scope="col">GST NO.</th>
+                <th scope="col">Bill No.</th>
+                <th scope="col">Bill Date</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {               
+                <tr>
+                    <th scope="row">@SrNo</th>
+                    <td>@i.vendor_name</td>
+                    <td>@i.GST_NO</td>
+                    <td>@i.BILL_NO</td>
+                    <td>
+                        @i.BILL_DATE
+                    </td>
+                <td>
+                    <a href="/Admin/AddUpdateSalesDetails?sales_id=@i.sales_id" class="btn btn-sm btn-primary" id="btnEdit">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                </td>
+                </tr>
+                SrNo = SrNo + 1;
+            }
+        </tbody>
+    </table>
+
+
+<script>
+    $('#sales_details').DataTable({
+        sorting: false,
+        paging: true
+    });
+</script>
+
+

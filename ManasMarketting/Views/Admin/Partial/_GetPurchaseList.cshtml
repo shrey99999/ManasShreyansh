@@ -1,0 +1,203 @@
+﻿@model List<ManasMarketting.Models.tbl_purchase_viewmodel>
+@using ManasMarketting.Models
+
+
+<div class="card-body">
+    <input type="hidden" value="@ViewBag.FileName" id="file_name" />
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-sm table-responsive">
+                <thead>
+                    <tr>
+                        <th>
+                            Sr
+                        </th>
+                        <th>
+                            INVOICE NUMBER
+                        </th>
+                        <th>
+                            INVOICE DATE
+                        </th>
+                        <th>
+                            INVOICE VALUE
+                        </th>
+                        <th>
+                            HSN CODE
+                        </th>
+                        <th>
+                            DESCRIPTION
+                        </th>
+                        <th>
+                            TOTAL QUANTITY
+                        </th>
+
+                        <th>
+                            GROSS AMOUNT
+                        </th>
+
+                        <th>
+                            IGST Amount
+                        </th>
+                        <th>
+                            PURCHASE ACCOUNT NAME
+                        </th>
+                        <th>
+                            TOTAL TAX PERCENT
+                        </th>
+                        <th>
+                            IGST
+                        </th>
+                        <th>
+                            TCS
+                        </th>
+                        <th>
+                            NET_AMOUNT
+                        </th>
+                        <th>
+                            INVOICE TYPE
+                        </th>
+                        <th>
+                            REVERSE CHARGE
+                        </th>
+                        <th>
+                            PARTY NAME
+                        </th>
+                        <th>
+                            GST NO
+                        </th>
+                        <th>
+                            GST STATE CODE
+                        </th>
+                        <th>
+                            GST STATE NAME
+                        </th>
+                        <th>
+                            INTER OR INTRA
+                        </th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+
+                        int SrNo = 1;
+                        foreach (var i in Model.Select(s => new { s.invoice_number, s.invoice_date, s.invoice_value}).Distinct())
+                        {
+                            int rowspan = Model.Where(w => w.invoice_number == i.invoice_number).Count();
+                            int flag = 0;
+                            foreach (var j in Model.Where(w => w.invoice_number == i.invoice_number))
+                            {
+                                if (flag == 0)
+                                {
+                                    flag = flag + 1;
+                                    <tr>
+                                        <td rowspan="@rowspan">@SrNo</td>
+                                        <td rowspan="@rowspan"> @i.invoice_number </td>
+                                        <td rowspan="@rowspan"> @i.invoice_date </td>
+                                        <td rowspan="@rowspan"> @i.invoice_value</td>
+                                        <td>@j.hsn_code</td>
+                                        <td>@j.description</td>
+                                        <td>@j.total_quantity</td>
+                                        <td>@j.gross_amount</td>
+                                        <td>@j.igst_12_amount</td>
+                                        <td>@j.purchase_account_name</td>
+                                        <td>@j.total_tax_per</td>
+                                        <td>@j.igst</td>
+                                        <td>@j.TCS</td>
+                                        <td>@j.net_amount</td>
+                                        <td>@j.invoice_type</td>
+                                        <td>@j.reverse_charge</td>
+                                        <td>@j.Party_Name</td>
+                                        <td>@j.gst_no</td>
+                                        <td>@j.gst_state_code</td>
+                                        <td>@j.gst_state_name</td>
+                                        <td>@j.inter_or_intra</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                       
+                                        <td>@j.hsn_code</td>
+                                        <td>@j.description</td>
+                                        <td>@j.total_quantity</td>
+                                        <td>@j.gross_amount</td>
+                                        <td>@j.igst_12_amount</td>
+                                        <td>@j.purchase_account_name</td>
+                                        <td>@j.total_tax_per</td>
+                                        <td>@j.igst</td>
+                                        <td>@j.TCS</td>
+                                        <td>@j.net_amount</td>
+                                        <td>@j.invoice_type</td>
+                                        <td>@j.reverse_charge</td>
+                                        <td>@j.Party_Name</td>
+                                        <td>@j.gst_no</td>
+                                        <td>@j.gst_state_code</td>
+                                        <td>@j.gst_state_name</td>
+                                        <td>@j.inter_or_intra</td>
+                                    </tr>
+
+                                }
+                            }
+                            SrNo = SrNo + 1;
+
+                        }
+
+                    }
+
+
+                </tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                @*     <tbody>
+                @{
+                int SrNo = 1;
+                @foreach (var j in Model)
+                {
+                <tr>
+                <td>@SrNo</td>
+                <td>@j.invoice_number</td>
+                <td>@j.invoice_date</td>
+                <td>@j.invoice_value</td>
+                <td>@j.hsn_code</td>
+                <td>@j.description</td>
+                <td>@j.total_quantity</td>
+                <td>@j.gross_amount</td>
+                <td>@(j.igst_12_amount == 0 ? j.igst_5_amount : j.igst_12_amount)</td>
+                <td>@j.purchase_account_name</td>
+                <td>@j.total_tax_per</td>
+                <td>@j.igst</td>
+                <td>@j.TCS</td>
+                <td>@j.net_amount</td>
+                <td>@j.invoice_type</td>
+                <td>@j.reverse_charge</td>
+                <td>@j.Party_Name</td>-->
+                <td>@j.gst_no</td>
+                <td>@j.gst_state_code</td>
+                <td>@j.gst_state_name</td>
+                <td>@j.inter_or_intra</td>
+                </tr>
+                SrNo = SrNo + 1;
+                }
+                }
+                </tbody> *@
+
+            </table>
+
+        </div>
+    </div>
+</div>

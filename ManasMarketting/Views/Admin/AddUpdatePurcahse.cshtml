@@ -1,0 +1,270 @@
+﻿@{
+
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
+
+@model ManasMarketting.Models.tbl_purchase_viewmodel
+
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="title">
+                        @if (Model.purchase_id < 1)
+                        {
+                            <h4>Purchase Details</h4>
+                        }
+                        else
+                        {
+                            <h3 class="card-title">Edit Purchase</h3>
+                        }
+
+                    </div>
+
+                </div>
+                <div class="col-md-6 col-sm-12 text-right">
+                    <a class="btn btn-sm btn-primary" asp-controller="Admin" asp-action="SalesReport"
+                       id="btnBack">
+                        Back
+                    </a>
+                </div>
+                <!-- Left col -->
+
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Invoice Number<sup style="color:red">*</sup></label>
+                        <input type="text" name="Invoice_Number" id="Invoice_Number" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Invoice Date<sup style="color:red">*</sup></label>
+                        <input type="text" name="Invoice_Date" id="Invoice_Date" class="form-control form-control-sm" value="01/01/2024" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Supplier_Name<sup style="color:red">*</sup></label>
+                        <select class="form-control form-control-sm" name="supplier_id" id="supplier_id">
+                            <option value="0">--All--</option>
+                            @foreach (var i in Model.supplier_list)
+                            {
+                                @if (i.supplier_id == Model.supplier_id)
+                                {
+                                    <option value="@i.supplier_id" selected>@i.supplier_name</option>
+                                }
+                                else
+                                {
+                                    <option value="@i.supplier_id">@i.supplier_name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Gst No<sup style="color:red">*</sup></label>
+                        <input type="text" name="gst_no" id="gst_no" class="form-control form-control-sm" disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>State Name<sup style="color:red">*</sup></label>
+                        <select class="form-control form-control-sm" name="state_id" id="state_id">
+                            <option value="0">--All--</option>
+                            @foreach (var i in Model.state_list)
+                            {
+                                <option value="@i.state_id">@i.state_name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>City Name<sup style="color:red">*</sup></label>
+                        <select class="form-control form-control-sm" name="city_id" id="city_id">
+                            <option value="0">--All--</option>
+                            @foreach (var i in Model.city_list)
+                            {
+                                <option value="@i.city_id">@i.city_name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Reverse Charge<sup style="color:red">*</sup></label>
+                        <select class="form-control form-control-sm" name="reverse_charge" id="reverse_charge">
+                            <option value="0">--All--</option>
+                            <option value="Y">Y</option>
+                            <option value="N">N</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Invoice Type<sup style="color:red">*</sup></label>
+                        <select class="form-control form-control-sm" name="invoice_type" id="invoice_type">
+                            <option value="0">--All--</option>
+                            <option value="Regular">Regular</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 pt-4">
+                    <div class="form-group">
+                        <input type="submit" value="Add" class="btn btn-sm btn-success" id="btnSave" />
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="purchaseidde" />
+            <div class="row">
+                <div class="col-lg-12" id="display_purchase_table"></div>
+            </div>
+        </div>
+
+
+
+
+
+        <script>
+            $(document).ready(function () {
+
+                var GetDetailsByInvoiceNo = function () {
+                    var invoice_no = $('#Invoice_Number').val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("_GetDetailsByInvoiceNo", "Admin")',
+                        data: { invoice_number: invoice_no },
+                        success: function (result) {
+
+                            $('#display_purchase_table').html(result);
+
+                        }
+                    });
+                }
+                GetDetailsByInvoiceNo();
+
+
+
+                $('#Invoice_Date').datepicker({
+                    dateFormat: "dd/mm/yy",
+                    changeMonth: true,
+                    changeYear: true
+                });
+
+                $('#supplier_id').change(function () {
+
+                    var selectedSupplierId = $(this).val();
+
+                    $.post('@Url.Action("GetGST", "Admin")', { supplier_id: selectedSupplierId }, function (data) {
+                        $('#gst_no').val(data);
+                    });
+                });
+
+                var getcity = function () {
+
+                    var state_id = $("#state_id").val();
+                    $.ajax({
+                        url: "@Url.Action("Getcity", "Admin")",
+                        type: "post",
+                        datatype: 'json',
+                        data: { state_id: state_id },
+                        success: function (data) {
+                            console.log(data);
+                            debugger;
+                            $("#city_id").empty();
+                            $("#city_id").append($("<option></option>").val(0).html('--Select--'));
+                            $.each(data, function (i, d) {
+                                if (d.city_id == $('#city_id1').val()) {
+                                    $("#city_id").append($("<option selected></option>").val(d.city_id).html(d.city_name));
+                                }
+                                else {
+                                    $("#city_id").append($("<option></option>").val(d.city_id).html(d.city_name));
+                                }
+                            });
+                        },
+
+                    });
+                }
+
+
+                $('#state_id').change(function () {
+                    getcity();
+                });
+                $('#btnSave').click(function () {
+
+                    var invoice_number = $('#Invoice_Number').val();
+                    var invoice_date = $('#Invoice_Date').val();
+                    var invoice_type = $('#invoice_type').val();
+                    var reverse_charge = $('#reverse_charge').val();
+                    var state_id = $('#state_id').val();
+                    var city_id = $('#city_id').val();
+                    var supplier_id = $('#supplier_id').val();
+                    var gst_no = $('#gst_no').val();
+
+                    var obj = {
+                        invoice_number: invoice_number,
+                        invoice_date: invoice_date,
+                        state_id: state_id,
+                        reverse_charge: reverse_charge,
+                        invoice_type: invoice_type,
+                        city_id: city_id,
+                        supplier_id: supplier_id,
+                        gst_no: gst_no
+                    }
+                    console.log(obj);
+
+                    $.post('@Url.Action("AddUpdatePurcahse", "Admin")', obj, function (data) { 
+                        console.log(data);
+                       
+                        $('#purchaseidde').val(data.status);
+
+                    });
+
+
+
+                });
+
+            });
+            function FormValidation() {
+                debugger;
+                var v_name = $("#vendor_id").val();
+                var s_id = $("#state_id").val();
+                var c_id = $("#city_id").val();
+                var GST = $('#GST_NO').val();
+                var city_id = $('#city_id').val();
+
+                if (v_name == "0") {
+                    swal("", "Please Select Vendor Name ", "warning")
+                    return false;
+
+                }
+                else if (GST == "") {
+                    swal("", "Please Enter GST", "warning")
+                    return false;
+                }
+                else if (s_id == "0") {
+                    swal("", "Please Select State", "warning")
+                    return false;
+                }
+                else if (c_id == "0") {
+                    swal("", "Please Select City", "warning")
+                    return false;
+                }
+            }
+        </script>
+
+
+
+
+
+
+
